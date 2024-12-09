@@ -5,6 +5,9 @@ import shutil
 
 if __name__ == '__main__':
     def rmrf(directory):
+        if not os.path.isdir(directory):
+            print(f'"{directory}" does not exist')
+            return
         print(f' rm -rf {directory}', end=' ... ')
         if dry_run:
             print('dry run')
@@ -12,13 +15,19 @@ if __name__ == '__main__':
             shutil.rmtree(directory, ignore_errors=True)
             print('DONE')
 
-    dry_run = False
-    dir_workspace_storage = '/home/al/.config/Code/User/workspaceStorage'
-    # dir_workspace_storage = '/home/al/.config/VSCodium/User/workspaceStorage'
-    if not os.path.isdir(dir_workspace_storage):
-        print(f'"{dir_workspace_storage}" does not exist')
+    dry_run = True
+
+    # dir_config = '/home/al/.config/Code'
+    dir_config = '/home/al/.config/VSCodium'
+    if not os.path.isdir(dir_config):
+        print(f'"{dir_config}" does not exist')
         exit(1)
 
+    rmrf(f'{dir_config}/Cache')
+    rmrf(f'{dir_config}/CachedData')
+    rmrf(f'{dir_config}/CachedExtensionVSIXs')
+
+    dir_workspace_storage = f'{dir_config}/User/workspaceStorage'
     for file in os.listdir(dir_workspace_storage):
         filename = os.fsdecode(file)
         dir_inner = f'{dir_workspace_storage}/{filename}'
