@@ -2,6 +2,7 @@
 import os
 import re
 import shutil
+import json
 
 if __name__ == '__main__':
     def rmrf(directory):
@@ -53,3 +54,21 @@ if __name__ == '__main__':
                     print('[f]', '[+]' if is_exists else '[ ]', found_name)
                     if not is_exists:
                         rmrf(dir_inner)
+
+    dir_history = f'{dir_config}/User/History'
+    for file in os.listdir(dir_history):
+        filename = os.fsdecode(file)
+        dir_inner = f'{dir_history}/{filename}'
+        file_entries = f'{dir_inner}/entries.json'
+        if os.path.isfile(file_entries):
+            # print(file_entries)
+            f = open(file_entries, 'r')
+            entries_j = json.load(f)
+            line = entries_j['resource'] if 'resource' in entries_j else ''
+            match_result = re.match(r'file://(.*)', line)
+            if match_result:
+                found_name = match_result.group(1)
+                is_exists = os.path.isfile(found_name)
+                print('[h]', '[+]' if is_exists else '[ ]', found_name)
+                if not is_exists:
+                    rmrf(dir_inner)
