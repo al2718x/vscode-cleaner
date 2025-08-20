@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import appdirs
 import argparse
 import os
 import re
@@ -20,14 +21,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Clean vscode cache')
     parser.add_argument('-d', '--dry', action='store_true', help='Dry run')
     parser.add_argument('-w', '--wet', action='store_true', help='Wet run (remove files)')
+    parser.add_argument('-v', '--vscode', type=str, help='VSCode config directory')
     args = parser.parse_args()
     if not args.wet and not args.dry:
         parser.print_help()
         exit(0)
     dry_run = not args.wet
 
-    # dir_config = '/home/al/.config/Code'
-    dir_config = '/home/al/.config/VSCodium'
+    dir_config = args.vscode if args.vscode else appdirs.user_config_dir('VSCodium')
     if not os.path.isdir(dir_config):
         print(f'"{dir_config}" does not exist')
         exit(1)
