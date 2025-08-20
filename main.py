@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import argparse
 import os
 import re
 import shutil
@@ -16,7 +17,14 @@ if __name__ == '__main__':
             shutil.rmtree(directory, ignore_errors=True)
             print('DONE')
 
-    dry_run = True
+    parser = argparse.ArgumentParser(description='Clean vscode cache')
+    parser.add_argument('-d', '--dry', action='store_true', help='Dry run')
+    parser.add_argument('-w', '--wet', action='store_true', help='Wet run (remove files)')
+    args = parser.parse_args()
+    if not args.wet and not args.dry:
+        parser.print_help()
+        exit(0)
+    dry_run = not args.wet
 
     # dir_config = '/home/al/.config/Code'
     dir_config = '/home/al/.config/VSCodium'
